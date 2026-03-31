@@ -7,6 +7,9 @@ import com.example.salarying.Corporation.User.entity.Member;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.Date;
 
 public class RecruitingDTO {
@@ -89,8 +92,11 @@ public class RecruitingDTO {
     public static class StatusRequest {
 
 
+        @NotNull(message = "채용공고 ID는 필수입니다.")
         private Long recruitingId;
 
+        @NotBlank(message = "채용 상태는 필수입니다.")
+        @Pattern(regexp = "1차전형|2차전형|최종전형|채용완료", message = "채용 상태 값이 올바르지 않습니다.")
         private String status;
 
 
@@ -119,6 +125,5 @@ public class RecruitingDTO {
         }
     }
     }
-
 
 

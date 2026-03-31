@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -66,7 +67,7 @@ public class ApplicantController {
      */
     @Operation(summary = "지원자 progress,status값 수정",description = "전형단계, 합격여부 값 변경 FOR USER")
     @PutMapping("/applicants")
-    public ResponseDTO<?> updateStatus(@AuthenticationPrincipal CustomUserDetails customUserDetails, ApplicantDTO.ResultRequest request){
+    public ResponseDTO<?> updateStatus(@AuthenticationPrincipal CustomUserDetails customUserDetails, @Valid @RequestBody ApplicantDTO.ResultRequest request){
         ApplicantDTO.ApplicantResponse applicantResponse = applicantService.updateApplicant(customUserDetails.getUserId(),request);
         return new ResponseDTO<>().ok(applicantResponse,"수정완료");
     }
