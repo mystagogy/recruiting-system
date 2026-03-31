@@ -7,20 +7,19 @@ import com.example.salarying.Corporation.Recruiting.exception.EmailException;
 import com.example.salarying.Corporation.Recruiting.exception.RecruitingException;
 import com.example.salarying.Corporation.User.exception.UserException;
 import com.example.salarying.global.dto.ErrorDTO;
-import com.example.salarying.global.exception.base.CustomException;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import javax.servlet.http.HttpServletResponse;
 
 @RestControllerAdvice
 public class CustomExceptionHandler implements ErrorController {
 
     //custom exception 처리 핸들러
     @ExceptionHandler(value = UserException.class)
-    public ResponseEntity handleUserException(CustomException ce) {
+    public ResponseEntity handleUserException(UserException ce) {
         ErrorDTO error = ErrorDTO.builder()
                 .errorCode(ce.getExceptionType().getErrorCode())
                 .errorMessage(ce.getExceptionType().getMessage())
@@ -94,5 +93,21 @@ public class CustomExceptionHandler implements ErrorController {
                 .build();
 
         return new ResponseEntity(error, ce.getExceptionType().getHttpStatus());
+    }
+
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorDTO> handleValidationException(MethodArgumentNotValidException e) {
+        String errorMessage = e.getBindingResult().getFieldErrors().stream()
+                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+                .findFirst()
+                .orElse("요청 데이터가 올바르지 않습니다.");
+
+        ErrorDTO error = ErrorDTO.builder()
+                .errorCode(HttpStatus.BAD_REQUEST.value())
+                .errorMessage(errorMessage)
+                .httpStatus(HttpStatus.BAD_REQUEST)
+                .build();
+
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 }

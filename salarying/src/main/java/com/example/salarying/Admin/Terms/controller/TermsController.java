@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RestController
 @AllArgsConstructor
 public class TermsController {
@@ -74,7 +76,7 @@ public class TermsController {
      */
     @Operation(summary = "약관 수정 API", description = "약관 내용 수정 FOR ADMIN, SUPERADMIN")
     @PutMapping("/terms")
-    public ResponseDTO<?> updateTerm(@AuthenticationPrincipal CustomUserDetails userDetails, TermsDTO.UpdateRequest request){
+    public ResponseDTO<?> updateTerm(@AuthenticationPrincipal CustomUserDetails userDetails, @Valid @RequestBody TermsDTO.UpdateRequest request){
         termsService.updateTerm(userDetails.getUserId(), request);
         return new ResponseDTO<>().ok(null, "변경 완료");
 

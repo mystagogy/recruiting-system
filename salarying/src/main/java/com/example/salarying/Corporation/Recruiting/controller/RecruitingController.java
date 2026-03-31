@@ -7,7 +7,6 @@ import com.example.salarying.global.dto.ResponseDTO;
 import com.example.salarying.global.jwt.CustomUserDetails;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -54,7 +53,7 @@ public class RecruitingController {
      */
     @Operation(summary = "채용공고 status 변경", description = "채용공고 전형 변경 FOR USER")
     @PutMapping("/recruiting")
-    public ResponseDTO<?> updateStatus(@AuthenticationPrincipal CustomUserDetails customUserDetails, RecruitingDTO.StatusRequest request){
+    public ResponseDTO<?> updateStatus(@AuthenticationPrincipal CustomUserDetails customUserDetails, @Valid @RequestBody RecruitingDTO.StatusRequest request){
         RecruitingDTO.RecruitingResponse responseDTO = recruitingService.updateStatus(customUserDetails.getUserId(),request);
         return new ResponseDTO<>().ok(responseDTO,"수정완료");
     }
