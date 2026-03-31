@@ -15,11 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ApplicantServiceImpl implements ApplicantService {
+
+    private static final Set<String> VALID_PROGRESS = Set.of("서류전형", "1차전형", "2차전형", "최종전형");
+    private static final Set<String> VALID_RESULT_STATUS = Set.of("합격", "불합격");
 
     private final ApplicantRepository applicantRepository;
 
@@ -92,13 +96,13 @@ public class ApplicantServiceImpl implements ApplicantService {
     public Boolean checkApplicantRequestDTO(ApplicantDTO.ApplicantRequest request) {
         if (request.getRecruitingId()==null) {
             throw new ApplicantException(ApplicantExceptionType.NOT_EXIST_RECRUITING);
-        } else if (request.getName() == null || request.getName().equals("")) {
+        } else if (request.getName() == null || request.getName().isBlank()) {
             throw new ApplicantException(ApplicantExceptionType.NOT_EXIST_NAME);
-        } else if (request.getNumber() == null || request.getNumber().equals("")) {
+        } else if (request.getNumber() == null || request.getNumber().isBlank()) {
             throw new ApplicantException(ApplicantExceptionType.NOT_EXIST_PHONE);
         } else if(!request.getNumber().matches("\\d{3}-?\\d{4}-?\\d{4}")){
             throw new ApplicantException(ApplicantExceptionType.NOT_PHONE_FORMAT);
-        } else if (request.getEmail().isEmpty()) {
+        } else if (request.getEmail() == null || request.getEmail().isBlank()) {
             throw new ApplicantException(ApplicantExceptionType.NOT_EXIST_EMAIL);
         } else if (!request.getEmail().matches("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
             throw new ApplicantException(ApplicantExceptionType.NOT_EMAIL_FORMAT);
@@ -138,13 +142,13 @@ public class ApplicantServiceImpl implements ApplicantService {
     public Boolean checkResultRequestDTO(ApplicantDTO.ResultRequest request) {
         if (request.getRecruitingId()==null) {
             throw new ApplicantException(ApplicantExceptionType.NOT_EXIST_RECRUITING);
+        } else if (request.getEmail() == null || request.getEmail().isBlank()) {
+            throw new ApplicantException(ApplicantExceptionType.NOT_EXIST_EMAIL);
         } else if (!request.getEmail().matches("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
             throw new ApplicantException(ApplicantExceptionType.NOT_EMAIL_FORMAT);
-        } else if (request.getEmail().isEmpty()) {
-            throw new ApplicantException(ApplicantExceptionType.NOT_EXIST_EMAIL);
-        } else if(request.getProgress().isEmpty()||!(request.getProgress().equals("서류전형")||request.getProgress().equals("1차전형")||request.getProgress().equals("2차전형")||request.getProgress().equals("최종전형"))){
+        } else if (request.getProgress() == null || request.getProgress().isBlank() || !VALID_PROGRESS.contains(request.getProgress())){
             throw new ApplicantException(ApplicantExceptionType.NOT_PROGRESS);
-        } else if (request.getStatus().isEmpty()||!(request.getStatus().equals("합격")||request.getStatus().equals("불합격"))) {
+        } else if (request.getStatus() == null || request.getStatus().isBlank() || !VALID_RESULT_STATUS.contains(request.getStatus())) {
             throw new ApplicantException(ApplicantExceptionType.NOT_MATCH_STATUS);
         } else {
             return true;

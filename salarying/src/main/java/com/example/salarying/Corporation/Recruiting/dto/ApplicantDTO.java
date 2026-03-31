@@ -6,7 +6,16 @@ import com.example.salarying.Corporation.Recruiting.entity.Recruiting;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+
 public class ApplicantDTO {
+
+    private static String normalize(String value) {
+        return value == null ? null : value.trim();
+    }
 
     @Getter
     @Builder
@@ -49,6 +58,14 @@ public class ApplicantDTO {
         private String progress;
 
         private String status;
+
+        public void setProgress(String progress) {
+            this.progress = normalize(progress);
+        }
+
+        public void setStatus(String status) {
+            this.status = normalize(status);
+        }
     }
 
     @Getter
@@ -67,6 +84,18 @@ public class ApplicantDTO {
         private String name;
 
         private String number;
+
+        public void setEmail(String email) {
+            this.email = normalize(email);
+        }
+
+        public void setName(String name) {
+            this.name = normalize(name);
+        }
+
+        public void setNumber(String number) {
+            this.number = normalize(number);
+        }
 
         public Applicant toEntity(Recruiting recruiting){
             return Applicant.builder()
@@ -88,15 +117,32 @@ public class ApplicantDTO {
     public static class ResultRequest {
 
 
+        @NotNull(message = "채용공고 ID는 필수입니다.")
         private Long recruitingId;
 
+        @NotBlank(message = "이메일은 필수입니다.")
+        @Email(message = "이메일 형식이 올바르지 않습니다.")
         private String email;
 
+        @NotBlank(message = "전형 단계는 필수입니다.")
+        @Pattern(regexp = "서류전형|1차전형|2차전형|최종전형", message = "전형 단계 값이 올바르지 않습니다.")
         private String progress;
 
+        @NotBlank(message = "합격 여부는 필수입니다.")
+        @Pattern(regexp = "합격|불합격", message = "합격 여부 값이 올바르지 않습니다.")
         private String status;
 
+        public void setEmail(String email) {
+            this.email = normalize(email);
+        }
 
+        public void setProgress(String progress) {
+            this.progress = normalize(progress);
+        }
+
+        public void setStatus(String status) {
+            this.status = normalize(status);
+        }
 
     }
 }

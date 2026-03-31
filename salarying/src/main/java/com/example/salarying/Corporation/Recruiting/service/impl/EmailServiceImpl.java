@@ -18,11 +18,15 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class EmailServiceImpl implements EmailService {
+
+    private static final Set<String> VALID_PROGRESS = Set.of("서류전형", "1차전형", "2차전형", "최종전형");
+    private static final Set<String> VALID_RESULT_STATUS = Set.of("합격", "불합격");
 
 
     private final EmailRepository emailRepository;
@@ -72,17 +76,17 @@ public class EmailServiceImpl implements EmailService {
      * @return: 올바른 형식-true/ 아니면 예외처리
      */
     public Boolean checkEmailDTO(EmailDTO.EmailRequest request) {
-        if (request.getTitle() == null || request.getTitle().equals("")) {
+        if (request.getTitle() == null || request.getTitle().isBlank()) {
             throw new EmailException(EmailExceptionType.NOT_EXIST_SUBJECT);
-        } else if (request.getContent() == null || request.getContent().equals("")) {
+        } else if (request.getContent() == null || request.getContent().isBlank()) {
             throw new EmailException(EmailExceptionType.NOT_EXIST_CONTENT);
-        } else if (request.getApplicantEmail().isEmpty()) {
+        } else if (request.getApplicantEmail() == null || request.getApplicantEmail().isBlank()) {
             throw new EmailException(EmailExceptionType.NOT_EXIST_EMAIL);
         } else if (!request.getApplicantEmail().matches("^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+$")) {
             throw new EmailException(EmailExceptionType.NOT_EMAIL_FORMAT);
-        } else if(request.getProgress().isEmpty()||!(request.getProgress().equals("서류전형")||request.getProgress().equals("1차전형")||request.getProgress().equals("2차전형")||request.getProgress().equals("최종전형"))){
+        } else if (request.getProgress() == null || request.getProgress().isBlank() || !VALID_PROGRESS.contains(request.getProgress())){
             throw new EmailException(EmailExceptionType.NOT_MATCH_PROGRESS);
-        } else if(request.getStatus().isEmpty()||!((request.getStatus()).equals("합격")||request.getStatus().equals("불합격"))){
+        } else if (request.getStatus() == null || request.getStatus().isBlank() || !VALID_RESULT_STATUS.contains(request.getStatus())){
             throw new EmailException(EmailExceptionType.NOT_MATCH_STATUS);
         }else {
             return true;
@@ -104,6 +108,5 @@ public class EmailServiceImpl implements EmailService {
 
 
 }
-
 
 
