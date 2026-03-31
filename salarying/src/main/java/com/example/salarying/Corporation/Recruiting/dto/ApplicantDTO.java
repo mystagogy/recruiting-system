@@ -13,6 +13,10 @@ import javax.validation.constraints.Pattern;
 
 public class ApplicantDTO {
 
+    private static String normalize(String value) {
+        return value == null ? null : value.trim();
+    }
+
     @Getter
     @Builder
     @AllArgsConstructor
@@ -54,6 +58,14 @@ public class ApplicantDTO {
         private String progress;
 
         private String status;
+
+        public void setProgress(String progress) {
+            this.progress = normalize(progress);
+        }
+
+        public void setStatus(String status) {
+            this.status = normalize(status);
+        }
     }
 
     @Getter
@@ -72,6 +84,18 @@ public class ApplicantDTO {
         private String name;
 
         private String number;
+
+        public void setEmail(String email) {
+            this.email = normalize(email);
+        }
+
+        public void setName(String name) {
+            this.name = normalize(name);
+        }
+
+        public void setNumber(String number) {
+            this.number = normalize(number);
+        }
 
         public Applicant toEntity(Recruiting recruiting){
             return Applicant.builder()
@@ -108,7 +132,17 @@ public class ApplicantDTO {
         @Pattern(regexp = "합격|불합격", message = "합격 여부 값이 올바르지 않습니다.")
         private String status;
 
+        public void setEmail(String email) {
+            this.email = normalize(email);
+        }
 
+        public void setProgress(String progress) {
+            this.progress = normalize(progress);
+        }
+
+        public void setStatus(String status) {
+            this.status = normalize(status);
+        }
 
     }
 }

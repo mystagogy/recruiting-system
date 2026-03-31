@@ -8,6 +8,11 @@ import java.util.Date;
 
 
 public class EmailDTO {
+
+    private static String normalize(String value) {
+        return value == null ? null : value.trim();
+    }
+
     @Getter
     @Setter
     @Builder
@@ -27,6 +32,26 @@ public class EmailDTO {
         private String progress;
 
         private String status;
+
+        public void setApplicantEmail(String applicantEmail) {
+            this.applicantEmail = normalize(applicantEmail);
+        }
+
+        public void setTitle(String title) {
+            this.title = normalize(title);
+        }
+
+        public void setContent(String content) {
+            this.content = normalize(content);
+        }
+
+        public void setProgress(String progress) {
+            this.progress = normalize(progress);
+        }
+
+        public void setStatus(String status) {
+            this.status = normalize(status);
+        }
 
 
     }

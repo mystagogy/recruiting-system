@@ -20,12 +20,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class RecruitingServiceImpl implements RecruitingService {
+
+    private static final Set<String> VALID_RECRUITING_STATUSES = Set.of("1차전형", "2차전형", "최종전형", "채용완료");
 
     private final RecruitingRepository recruitingRepository;
     private final ProgressRepository progressRepository;
@@ -76,9 +79,9 @@ public class RecruitingServiceImpl implements RecruitingService {
      * @return: 공고명,직무 작성안되어 있거나, 채용절차 없을시 false/ 잘 작성되어 있으면  true
      */
     public Boolean checkRecruitingDTO(RecruitingDTO.RecruitingRequest request){
-        if(request.getTitle()==null||request.getTitle().equals("")){
+        if(request.getTitle() == null || request.getTitle().isBlank()){
             throw new RecruitingException(RecruitingExceptionType.NOT_EXIST_TITLE);
-        } else if (request.getTask()==null||request.getTask().equals("")) {
+        } else if (request.getTask() == null || request.getTask().isBlank()) {
             throw new RecruitingException(RecruitingExceptionType.NOT_EXIST_TASK);
         } else if (!request.getDocument()&& !request.getFirstRound()&& !request.getSecondRound()&& !request.getFinalRound()){
             throw new RecruitingException(RecruitingExceptionType.NOT_EXIST_PROGRESS);
@@ -126,9 +129,9 @@ public class RecruitingServiceImpl implements RecruitingService {
     public Boolean checkStatusDTO(RecruitingDTO.StatusRequest request){
         if(request.getRecruitingId()==null){
             throw new RecruitingException(RecruitingExceptionType.NOT_EXIST_ID);
-        } else if (request.getStatus()==null||request.getStatus().equals("")) {
+        } else if (request.getStatus() == null || request.getStatus().isBlank()) {
             throw new RecruitingException(RecruitingExceptionType.NOT_EXIST_PROGRESS);
-        } else if (!(request.getStatus().equals("1차전형")||request.getStatus().equals("2차전형")||request.getStatus().equals("최종전형")||request.getStatus().equals("채용완료"))){
+        } else if (!VALID_RECRUITING_STATUSES.contains(request.getStatus())){
             throw new RecruitingException(RecruitingExceptionType.NOT_STATUS_FORMAT);
         }else{
             return true;

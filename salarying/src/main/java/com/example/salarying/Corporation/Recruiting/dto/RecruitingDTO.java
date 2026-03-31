@@ -14,6 +14,10 @@ import java.util.Date;
 
 public class RecruitingDTO {
 
+    private static String normalize(String value) {
+        return value == null ? null : value.trim();
+    }
+
     @Getter
     @Builder
     @AllArgsConstructor
@@ -62,6 +66,14 @@ public class RecruitingDTO {
 
         private Boolean finalRound;
 
+        public void setTitle(String title) {
+            this.title = normalize(title);
+        }
+
+        public void setTask(String task) {
+            this.task = normalize(task);
+        }
+
 
         public Recruiting toRecruitingEntity(Member member) {
             return Recruiting.builder()
@@ -99,6 +111,9 @@ public class RecruitingDTO {
         @Pattern(regexp = "1차전형|2차전형|최종전형|채용완료", message = "채용 상태 값이 올바르지 않습니다.")
         private String status;
 
+        public void setStatus(String status) {
+            this.status = normalize(status);
+        }
 
     }
 
