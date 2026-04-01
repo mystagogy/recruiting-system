@@ -5,6 +5,8 @@ import com.example.salarying.Admin.User.entity.Admin;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 public class TermsDTO {
@@ -123,12 +125,16 @@ public class TermsDTO {
     public static class UpdateRequest {
 
         @Schema(name = "Id", example = "1")
+        @NotNull(message = "약관 ID는 필수입니다.")
         private Long Id;
         @Schema(name = "version", example = "1.0")
+        @NotBlank(message = "버전은 필수입니다.")
         private String version;
         @Schema(name = "title", example = "제목")
+        @NotBlank(message = "제목은 필수입니다.")
         private String title;
         @Schema(name = "content", example = "내용")
+        @NotBlank(message = "내용은 필수입니다.")
         private String content;
     }
 }
